@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User } from 'lucide-react';
-import axios from 'axios';
+import { crearReserva } from './apiReservas';
 
 const CrearReserva = () => {
   const [reserva, setReserva] = useState({
@@ -22,8 +22,8 @@ const CrearReserva = () => {
 
   const handleGuardar = async () => {
     try {
-      const response = await axios.post('http://localhost:8585/api/reservas', reserva);
-      console.log('Reserva creada:', response.data);
+      const nuevaReserva = await crearReserva(reserva);
+      console.log('Reserva creada:', nuevaReserva);
       alert('Reserva creada exitosamente');
     } catch (error) {
       console.error('Error al crear reserva:', error);

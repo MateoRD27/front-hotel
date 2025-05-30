@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from 'lucide-react';
-import axios from 'axios';
+import { modificarReserva, getReservaById } from './apiReservas';
 
-const ModificarReserva = () => {
-  const [reserva, setReserva] = useState({
-    llegada: '2023-08-27', // Valores iniciales de ejemplo
-    salida: '2023-09-01',
-    habitacion: '412',
-    tarifa: '',
-    nombre: 'Diego Armando',
-    apellidos: 'Maradona',
-    telefono: '444-333'
-  });
+const ModificarReserva = ({ reservaId = 1 }) => {
+  const [reserva, setReserva] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReserva = async () => {
+      try {
+        const data = await getReservaById(reservaId);
+        setReserva(data);
+      } catch (error) {
+        setReserva(null);
+        alert('Error al obtener la reserva');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReserva();
+  }, [reservaId]);
 
   const handleChange = (field, value) => {
     setReserva(prev => ({
@@ -22,9 +30,8 @@ const ModificarReserva = () => {
 
   const handleGuardar = async () => {
     try {
-      // Suponiendo que hay un id de reserva, aquí se usa 1 como ejemplo
-      const response = await axios.put('http://localhost:8585/api/reservas/1', reserva);
-      console.log('Reserva modificada:', response.data);
+      const reservaActualizada = await modificarReserva(reservaId, reserva);
+      console.log('Reserva modificada:', reservaActualizada);
       alert('Reserva modificada exitosamente');
     } catch (error) {
       console.error('Error al modificar reserva:', error);
@@ -33,9 +40,15 @@ const ModificarReserva = () => {
   };
 
   const handleCancelar = () => {
-    console.log('Cancelando modificación');
     // Aquí implementarías la lógica para cancelar la modificación
   };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Cargando reserva...</div>;
+  }
+  if (!reserva) {
+    return <div className="min-h-screen flex items-center justify-center text-red-600">No se encontró la reserva.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

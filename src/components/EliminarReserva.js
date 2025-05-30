@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from 'lucide-react';
-import axios from 'axios';
+import { eliminarReserva, getReservaById } from './apiReservas';
 
-const EliminarReserva = () => {
+const EliminarReserva = ({ reservaId = 1 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [reservaInfo, setReservaInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // En un caso real, esta información vendría de algún estado o prop
-  const reservaInfo = {
-    llegada: '2023-08-27',
-    salida: '2023-09-01',
-    habitacion: '412',
-    nombre: 'Diego Armando',
-    apellidos: 'Maradona',
-    telefono: '444-333'
-  };
+  useEffect(() => {
+    const fetchReserva = async () => {
+      try {
+        const data = await getReservaById(reservaId);
+        setReservaInfo(data);
+      } catch (error) {
+        setReservaInfo(null);
+        alert('Error al obtener la reserva');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReserva();
+  }, [reservaId]);
 
   const handleEliminar = () => {
     setShowConfirmation(true);
@@ -21,8 +28,7 @@ const EliminarReserva = () => {
 
   const handleConfirmarEliminacion = async () => {
     try {
-      // Suponiendo que hay un id de reserva, aquí se usa 1 como ejemplo
-      await axios.delete('http://localhost:8585/api/reservas/1');
+      await eliminarReserva(reservaId);
       alert('Reserva eliminada exitosamente');
       setShowConfirmation(false);
     } catch (error) {
@@ -35,6 +41,13 @@ const EliminarReserva = () => {
   const handleCancelarEliminacion = () => {
     setShowConfirmation(false);
   };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Cargando reserva...</div>;
+  }
+  if (!reservaInfo) {
+    return <div className="min-h-screen flex items-center justify-center text-red-600">No se encontró la reserva.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
