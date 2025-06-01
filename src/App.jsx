@@ -4,10 +4,17 @@ import axios from 'axios';
 import './App.css';
 import { useAuth } from './context/AuthContext';
 import LoadingScreen from './components/common/LoadingScreen';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import Layout from './components/common/Layout';
+
+
 
 // Rutas perezosas
 const Login = lazy(() => import('./components/auth/Login'));
 const Register = lazy(() => import('./components/auth/Register'));
+const Reportes = lazy(() => import('./components/Reportes'));
+
+
 const NotFound = lazy(() => import('./components/NotFound'));
 
 function App() {
@@ -57,12 +64,19 @@ function App() {
       <Routes>
         {/* Redirigir raíz según autenticación */}
         <Route path="/" element={
-          isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+          isAuthenticated ? <Navigate to="/reportes" /> : <Navigate to="/login" />
         } />
 
         {/* Rutas públicas */}
-        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} />
-        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" />} />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/reportes" />} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/reportes" />} />
+
+        <Route element={<ProtectedRoute isAllowed={isAuthenticated} />}>
+          <Route element={<Layout />}>
+            <Route path="/reportes" element={<Reportes />} />
+            {/* Agrega más rutas protegidas aquí */}
+          </Route>
+        </Route>
 
         {/* Página no encontrada */}
         <Route path="*" element={<NotFound />} />

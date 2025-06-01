@@ -34,24 +34,28 @@ function Register() {
   const onSubmit = async (data) => {
     setLoading(true);
     setError('');
-    
-    // Remove confirmPassword before sending to the API
+
     const { confirmPassword, ...userData } = data;
-    
+
     try {
-      const success = await authRegister(userData);
-      if (success) {
+        const success = await authRegister(userData);
+        if (success) {
         toast.success('¡Registro exitoso! Por favor inicie sesión.');
         navigate('/login');
-      } else {
+        } else {
         setError('No se pudo completar el registro. Intente nuevamente.');
-      }
+        }
     } catch (err) {
-      setError('Error en el registro. Por favor intente más tarde.');
+        if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message); // <--- Aquí se muestra el mensaje real
+        } else {
+        setError('Error en el registro. Por favor intente más tarde.');
+        }
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+    };
+
 
   return (
     <Container component="main" maxWidth="sm">
