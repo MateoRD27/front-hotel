@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReservaApp from './components/ReservaApp';
 import axios from 'axios';
 import './App.css';
 
@@ -46,9 +47,10 @@ function App() {
     initApp();
   }, []);
 
-  return (
+ return (
     <div className="App">
       <header className="App-header">
+        {/* Estado del backend */}
         <h1>Hotel Management System</h1>
         <div className={`message-box ${status}`}>
           <h2>Estado del Backend:</h2>
@@ -58,6 +60,8 @@ function App() {
         <p>
           Esta es una aplicación de ejemplo que demuestra la integración de Electron, React y Spring Boot.
         </p>
+        {/* Aquí llamas la vista
+        <ReservaApp /> */}
       </header>
     </div>
   );
