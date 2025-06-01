@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CrearReserva from './components/CrearReserva'; // Importa el componente de crear reserva
 import axios from 'axios';
 import './App.css';
 
@@ -8,23 +9,20 @@ function App() {
   const [status, setStatus] = useState('loading');
 
   useEffect(() => {
-    // Función para obtener el puerto del backend desde Electron
     const getBackendPort = async () => {
       try {
-        // Verificar si estamos en Electron
         if (window.electronAPI) {
           const port = await window.electronAPI.getBackendPort();
           setBackendPort(port);
           return port;
         }
-        return 8585; // Puerto por defecto
+        return 8585;
       } catch (error) {
         console.error('Error al obtener el puerto del backend:', error);
-        return 8080; // Puerto por defecto en caso de error
+        return 8080;
       }
     };
 
-    // Función para probar la conexión con el backend
     const testBackendConnection = async (port) => {
       try {
         const response = await axios.get(`http://localhost:${port}/api/test`);
@@ -37,7 +35,6 @@ function App() {
       }
     };
 
-    // Inicializar la aplicación
     const initApp = async () => {
       const port = await getBackendPort();
       await testBackendConnection(port);
@@ -58,6 +55,8 @@ function App() {
         <p>
           Esta es una aplicación de ejemplo que demuestra la integración de Electron, React y Spring Boot.
         </p>
+        {/* Aquí se muestra el formulario para agregar una reserva */}
+        <CrearReserva />
       </header>
     </div>
   );

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { User } from 'lucide-react';
 import { crearReserva } from './apiReservas';
 
 const CrearReserva = () => {
   const [reserva, setReserva] = useState({
-    llegada: '',
-    salida: '',
-    habitacion: '',
-    tarifa: '',
-    nombre: '',
-    apellidos: '',
-    telefono: ''
+    fechaCheckin: '',
+    fechaCheckout: '',
+    numPersonas: 1,
+    notas: '',
+    estadoReserva: 'PENDIENTE',
+    habitacionId: '',
+    huespedId: '',
+    usuarioId: '',
   });
 
   const handleChange = (field, value) => {
@@ -22,8 +22,19 @@ const CrearReserva = () => {
 
   const handleGuardar = async () => {
     try {
-      const nuevaReserva = await crearReserva(reserva);
-      console.log('Reserva creada:', nuevaReserva);
+      const now = new Date();
+      const reservaData = {
+        fechaReserva: now.toISOString(),
+        fechaCheckin: reserva.fechaCheckin,
+        fechaCheckout: reserva.fechaCheckout,
+        numPersonas: Number(reserva.numPersonas),
+        notas: reserva.notas,
+        estadoReserva: reserva.estadoReserva,
+        habitacion: { id: reserva.habitacionId },
+        huesped: { id: reserva.huespedId },
+        usuario: reserva.usuarioId ? { id: reserva.usuarioId } : undefined,
+      };
+      await crearReserva(reservaData);
       alert('Reserva creada exitosamente');
     } catch (error) {
       console.error('Error al crear reserva:', error);
@@ -38,16 +49,14 @@ const CrearReserva = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Bar (Podrías moverlo a un componente Layout si se repite) */}
+      {/* Navigation Bar */}
       <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-gray-800 rounded-full"></div>
               <span className="text-gray-800 font-medium">Grupo Montaña</span>
             </div>
-            {/* Navigation Links */}
             <div className="flex items-center space-x-8">
               <a href="#" className="text-gray-700 hover:text-gray-900">Inicio</a>
               <a href="#" className="text-gray-700 hover:text-gray-900">Reservaciones</a>
@@ -58,9 +67,7 @@ const CrearReserva = () => {
               <button className="bg-black text-white px-4 py-2 rounded-md text-sm">
                 Nueva Reserva
               </button>
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-gray-600" />
-              </div>
+              {/* Puedes agregar un icono de usuario aquí si lo necesitas */}
             </div>
           </div>
         </div>
@@ -75,90 +82,93 @@ const CrearReserva = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Llegada
+                  Fecha Check-in
                 </label>
                 <input
                   type="date"
-                  value={reserva.llegada}
-                  onChange={(e) => handleChange('llegada', e.target.value)}
+                  value={reserva.fechaCheckin}
+                  onChange={e => handleChange('fechaCheckin', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Salida
+                  Fecha Check-out
                 </label>
                 <input
                   type="date"
-                  value={reserva.salida}
-                  onChange={(e) => handleChange('salida', e.target.value)}
+                  value={reserva.fechaCheckout}
+                  onChange={e => handleChange('fechaCheckout', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Habitación
+                  Número de personas
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  value={reserva.numPersonas}
+                  onChange={e => handleChange('numPersonas', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Notas
+                </label>
+                <textarea
+                  value={reserva.notas}
+                  onChange={e => handleChange('notas', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Estado de la reserva
                 </label>
                 <select
-                  value={reserva.habitacion}
-                  onChange={(e) => handleChange('habitacion', e.target.value)}
+                  value={reserva.estadoReserva}
+                  onChange={e => handleChange('estadoReserva', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="">Seleccionar habitación</option>
-                  <option value="101">101</option>
-                  <option value="102">102</option>
-                  <option value="201">201</option>
-                  <option value="202">202</option>
+                  <option value="PENDIENTE">Pendiente</option>
+                  <option value="CONFIRMADA">Confirmada</option>
+                  <option value="CANCELADA">Cancelada</option>
+                  {/* Agrega más estados según tu Enum */}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tarifa
+                  ID Habitación
                 </label>
                 <input
                   type="number"
-                  value={reserva.tarifa}
-                  onChange={(e) => handleChange('tarifa', e.target.value)}
-                  placeholder="0.00"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-          {/* Información del huésped */}
-          <div className="mb-8">
-            <h2 className="text-lg font-medium text-gray-900 mb-6">Información del huésped</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre
-                </label>
-                <input
-                  type="text"
-                  value={reserva.nombre}
-                  onChange={(e) => handleChange('nombre', e.target.value)}
+                  value={reserva.habitacionId}
+                  onChange={e => handleChange('habitacionId', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Apellidos
+                  ID Huésped
                 </label>
                 <input
-                  type="text"
-                  value={reserva.apellidos}
-                  onChange={(e) => handleChange('apellidos', e.target.value)}
+                  type="number"
+                  value={reserva.huespedId}
+                  onChange={e => handleChange('huespedId', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
-              <div className="md:col-span-2">
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Teléfono
+                  ID Usuario (opcional)
                 </label>
                 <input
-                  type="tel"
-                  value={reserva.telefono}
-                  onChange={(e) => handleChange('telefono', e.target.value)}
+                  type="number"
+                  value={reserva.usuarioId}
+                  onChange={e => handleChange('usuarioId', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
