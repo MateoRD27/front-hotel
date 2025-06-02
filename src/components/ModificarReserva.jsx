@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { modificarReserva, getReservaById } from './apiReservas';
+import axios from 'axios';
 
 const ModificarReserva = ({ reservaId }) => {
   const [reserva, setReserva] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [habitaciones, setHabitaciones] = useState([]);
 
   useEffect(() => {
     const fetchReserva = async () => {
@@ -24,6 +26,30 @@ const ModificarReserva = ({ reservaId }) => {
     };
     fetchReserva();
   }, [reservaId]);
+
+  useEffect(() => {
+    const fetchHabitaciones = async () => {
+      try {
+        const response = await axios.get('http://localhost:8585/api/habitaciones');
+        let habitacionesBackend = response.data;
+        // Si la reserva ya tiene una habitación seleccionada y no está en la lista, la agregamos temporalmente
+        if (reserva && reserva.habitacionId && !habitacionesBackend.some(h => String(h.id) === String(reserva.habitacionId))) {
+          habitacionesBackend = [
+            ...habitacionesBackend,
+            {
+              id: reserva.habitacionId,
+              numero: reserva.numeroHabitacion || `Habitación ${reserva.habitacionId}`,
+              // Puedes agregar más campos si lo deseas
+            }
+          ];
+        }
+        setHabitaciones(habitacionesBackend);
+      } catch (err) {
+        setError('No se pudieron cargar las habitaciones');
+      }
+    };
+    fetchHabitaciones();
+  }, [reservaId, reserva?.habitacionId, reserva?.numeroHabitacion]);
 
   const handleChange = (field, value) => {
     setReserva(prev => ({
@@ -121,14 +147,24 @@ const ModificarReserva = ({ reservaId }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                ID Habitación
+                Habitación
               </label>
-              <input
-                type="number"
+              <select
                 value={reserva.habitacionId}
-                onChange={e => handleChange('habitacionId', e.target.value)}
+                onChange={e => {
+                  const selected = habitaciones.find(h => String(h.id) === e.target.value);
+                  handleChange('habitacionId', e.target.value);
+                  handleChange('numeroHabitacion', selected ? selected.numero : '');
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
+              >
+                <option value="">Selecciona una habitación</option>
+                {habitaciones.map(h => (
+                  <option key={h.id} value={h.id}>
+                    {h.numero} (ID: {h.id})
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -150,6 +186,17 @@ const ModificarReserva = ({ reservaId }) => {
                 value={reserva.usuarioId}
                 onChange={e => handleChange('usuarioId', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Número de habitación
+              </label>
+              <input
+                type="text"
+                value={reserva.numeroHabitacion || ''}
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
               />
             </div>
           </div>
