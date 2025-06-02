@@ -7,10 +7,11 @@ const CrearReserva = () => {
     fechaCheckout: '',
     numPersonas: 1,
     notas: '',
-    estadoReserva: 'PENDIENTE',
+    estadoReserva: 'EN_CURSO',
     habitacionId: '',
     huespedId: '',
     usuarioId: '',
+    numeroHabitacion: '', // AÑADIDO
   });
 
   const handleChange = (field, value) => {
@@ -21,6 +22,12 @@ const CrearReserva = () => {
   };
 
   const handleGuardar = async () => {
+    // Validación básica de campos requeridos
+    if (!reserva.habitacionId || !reserva.huespedId || !reserva.usuarioId || !reserva.numeroHabitacion) {
+      alert('Por favor completa todos los campos requeridos.');
+      return;
+    }
+
     try {
       const now = new Date();
       const reservaData = {
@@ -30,10 +37,12 @@ const CrearReserva = () => {
         numPersonas: Number(reserva.numPersonas),
         notas: reserva.notas,
         estadoReserva: reserva.estadoReserva,
-        habitacion: { id: reserva.habitacionId },
-        huesped: { id: reserva.huespedId },
-        usuario: reserva.usuarioId ? { id: reserva.usuarioId } : undefined,
+        habitacionId: Number(reserva.habitacionId),
+        huespedId: Number(reserva.huespedId),
+        usuarioId: Number(reserva.usuarioId),
+        numeroHabitacion: reserva.numeroHabitacion,
       };
+
       await crearReserva(reservaData);
       alert('Reserva creada exitosamente');
     } catch (error) {
@@ -44,7 +53,7 @@ const CrearReserva = () => {
 
   const handleCancelar = () => {
     console.log('Cancelando creación de reserva');
-    // Aquí la lógica para cancelar
+    // Aquí puedes limpiar el formulario o redirigir
   };
 
   return (
@@ -67,124 +76,117 @@ const CrearReserva = () => {
               <button className="bg-black text-white px-4 py-2 rounded-md text-sm">
                 Nueva Reserva
               </button>
-              {/* Puedes agregar un icono de usuario aquí si lo necesitas */}
             </div>
           </div>
         </div>
       </nav>
+
       {/* Main Content */}
       <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-semibold text-gray-900 mb-8">Crear reserva</h1>
         <div className="bg-white shadow rounded-lg p-6">
-          {/* Detalles de la reserva */}
           <div className="mb-8">
             <h2 className="text-lg font-medium text-gray-900 mb-6">Detalles de la reserva</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Fecha Check-in
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Fecha Check-in</label>
                 <input
                   type="date"
                   value={reserva.fechaCheckin}
                   onChange={e => handleChange('fechaCheckin', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Fecha Check-out
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Fecha Check-out</label>
                 <input
                   type="date"
                   value={reserva.fechaCheckout}
                   onChange={e => handleChange('fechaCheckout', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Número de personas
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Número de personas</label>
                 <input
                   type="number"
                   min={1}
                   value={reserva.numPersonas}
                   onChange={e => handleChange('numPersonas', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notas
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Notas</label>
                 <textarea
                   value={reserva.notas}
                   onChange={e => handleChange('notas', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Estado de la reserva
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Estado de la reserva</label>
                 <select
                   value={reserva.estadoReserva}
                   onChange={e => handleChange('estadoReserva', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
-                  <option value="PENDIENTE">Pendiente</option>
-                  <option value="CONFIRMADA">Confirmada</option>
+                  <option value="EN_CURSO">En curso</option>
+                  <option value="FINALIZADA">Finalizada</option>
                   <option value="CANCELADA">Cancelada</option>
-                  {/* Agrega más estados según tu Enum */}
                 </select>
+
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ID Habitación
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">ID Habitación</label>
                 <input
                   type="number"
                   value={reserva.habitacionId}
                   onChange={e => handleChange('habitacionId', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ID Huésped
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">ID Huésped</label>
                 <input
                   type="number"
                   value={reserva.huespedId}
                   onChange={e => handleChange('huespedId', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ID Usuario (opcional)
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">ID Usuario</label>
                 <input
                   type="number"
                   value={reserva.usuarioId}
                   onChange={e => handleChange('usuarioId', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Número de habitación</label>
+                <input
+                  type="text"
+                  value={reserva.numeroHabitacion}
+                  onChange={e => handleChange('numeroHabitacion', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
             </div>
           </div>
+
           {/* Botones */}
           <div className="flex justify-end space-x-4">
             <button
               onClick={handleCancelar}
-              className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               Cancelar reservación
             </button>
             <button
               onClick={handleGuardar}
-              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
             >
               Guardar
             </button>

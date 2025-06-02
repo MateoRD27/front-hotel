@@ -1,5 +1,9 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LandingPage from './components/landingpage';
+import ModificarReserva from './components/ModificarReserva';
+import EliminarReserva from './components/EliminarReserva';
+import CrearReserva from './components/CrearReserva';
 import axios from 'axios';
 import './App.css';
 import { useAuth } from './context/AuthContext';
@@ -64,17 +68,20 @@ function App() {
       <Routes>
         {/* Redirigir raíz según autenticación */}
         <Route path="/" element={
-          isAuthenticated ? <Navigate to="/reportes" /> : <Navigate to="/login" />
+          isAuthenticated ? <Navigate to="/landing" /> : <Navigate to="/login" />
         } />
 
         {/* Rutas públicas */}
-        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/reportes" />} />
-        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/reportes" />} />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/landing" />} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/landing" />} />
 
         <Route element={<ProtectedRoute isAllowed={isAuthenticated} />}>
           <Route element={<Layout />}>
             <Route path="/reportes" element={<Reportes />} />
-            {/* Agrega más rutas protegidas aquí */}
+            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/modificar/:id" element={<ModificarReservaWrapper />} />
+            <Route path="/eliminar/:id" element={<EliminarReservaWrapper />} />
+            <Route path="/crear-reserva" element={<CrearReserva />} />
           </Route>
         </Route>
 
@@ -84,6 +91,17 @@ function App() {
 
     </Suspense>
   );
+}
+
+
+function ModificarReservaWrapper() {
+  const { id } = require('react-router-dom').useParams();
+  return <ModificarReserva reservaId={id} />;
+}
+ 
+function EliminarReservaWrapper() {
+  const { id } = require('react-router-dom').useParams();
+  return <EliminarReserva reservaId={id} />;
 }
 
 export default App;
