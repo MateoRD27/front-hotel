@@ -14,7 +14,14 @@ export const getReservaById = async (id) => {
 
 // Crear reserva
 export const crearReserva = async (reserva) => {
-  const response = await axios.post('http://localhost:8585/api/reservas', reserva);
+  // Si se pasa huespedId, incluirlo como objeto huesped
+  const reservaData = {
+    ...reserva,
+    huesped: reserva.huespedId ? { id: Number(reserva.huespedId) } : undefined,
+  };
+  // Elimina huespedId del body si existe
+  delete reservaData.huespedId;
+  const response = await axios.post('http://localhost:8585/api/reservas', reservaData);
   return response.data;
 };
 

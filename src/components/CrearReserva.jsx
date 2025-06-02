@@ -9,21 +9,44 @@ const CrearReserva = () => {
     notas: '',
     estadoReserva: 'EN_CURSO',
     habitacionId: '',
-    huespedId: '',
     usuarioId: '',
-    numeroHabitacion: '', // AÑADIDO
+    numeroHabitacion: '',
+    // Campos de huésped
+    huesped: {
+      nombre: '',
+      apellido: '',
+      email: '',
+      telefono: '',
+      direccion: '',
+      ciudad: '',
+      pais: '',
+      documentoIdentidad: '',
+      tipoDocumento: '',
+      notas: '',
+    },
   });
 
   const handleChange = (field, value) => {
-    setReserva(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    if (field.startsWith('huesped.')) {
+      const subField = field.split('.')[1];
+      setReserva(prev => ({
+        ...prev,
+        huesped: {
+          ...prev.huesped,
+          [subField]: value
+        }
+      }));
+    } else {
+      setReserva(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
   };
 
   const handleGuardar = async () => {
     // Validación básica de campos requeridos
-    if (!reserva.habitacionId || !reserva.huespedId || !reserva.usuarioId || !reserva.numeroHabitacion) {
+    if (!reserva.habitacionId || !reserva.usuarioId || !reserva.numeroHabitacion || !reserva.huesped.nombre || !reserva.huesped.apellido || !reserva.huesped.email) {
       alert('Por favor completa todos los campos requeridos.');
       return;
     }
@@ -38,9 +61,9 @@ const CrearReserva = () => {
         notas: reserva.notas,
         estadoReserva: reserva.estadoReserva,
         habitacionId: Number(reserva.habitacionId),
-        huespedId: Number(reserva.huespedId),
         usuarioId: Number(reserva.usuarioId),
         numeroHabitacion: reserva.numeroHabitacion,
+        huesped: reserva.huesped,
       };
 
       await crearReserva(reservaData);
@@ -147,15 +170,6 @@ const CrearReserva = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">ID Huésped</label>
-                <input
-                  type="number"
-                  value={reserva.huespedId}
-                  onChange={e => handleChange('huespedId', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">ID Usuario</label>
                 <input
                   type="number"
@@ -170,6 +184,101 @@ const CrearReserva = () => {
                   type="text"
                   value={reserva.numeroHabitacion}
                   onChange={e => handleChange('numeroHabitacion', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-lg font-medium text-gray-900 mb-6">Datos del huésped</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.nombre}
+                  onChange={e => handleChange('huesped.nombre', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.apellido}
+                  onChange={e => handleChange('huesped.apellido', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={reserva.huesped.email}
+                  onChange={e => handleChange('huesped.email', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.telefono}
+                  onChange={e => handleChange('huesped.telefono', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Dirección</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.direccion}
+                  onChange={e => handleChange('huesped.direccion', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Ciudad</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.ciudad}
+                  onChange={e => handleChange('huesped.ciudad', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">País</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.pais}
+                  onChange={e => handleChange('huesped.pais', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de documento</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.tipoDocumento}
+                  onChange={e => handleChange('huesped.tipoDocumento', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Documento de identidad</label>
+                <input
+                  type="text"
+                  value={reserva.huesped.documentoIdentidad}
+                  onChange={e => handleChange('huesped.documentoIdentidad', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Notas del huésped</label>
+                <textarea
+                  value={reserva.huesped.notas}
+                  onChange={e => handleChange('huesped.notas', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
