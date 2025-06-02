@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { crearReserva } from './apiReservas';
+import axios from 'axios';
 
 const CrearReserva = () => {
   const [reserva, setReserva] = useState({
@@ -14,6 +15,19 @@ const CrearReserva = () => {
     numeroHabitacion: '', // AÑADIDO
   });
   const [error, setError] = useState('');
+  const [habitaciones, setHabitaciones] = useState([]);
+
+  useEffect(() => {
+    const fetchHabitaciones = async () => {
+      try {
+        const response = await axios.get('http://localhost:8585/api/habitaciones');
+        setHabitaciones(response.data);
+      } catch (err) {
+        setError('No se pudieron cargar las habitaciones');
+      }
+    };
+    fetchHabitaciones();
+  }, []);
 
   const handleChange = (field, value) => {
     setReserva(prev => ({
@@ -140,13 +154,23 @@ const CrearReserva = () => {
 
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">ID Habitación</label>
-                <input
-                  type="number"
+                <label className="block text-sm font-medium text-gray-700 mb-2">Habitación</label>
+                <select
                   value={reserva.habitacionId}
-                  onChange={e => handleChange('habitacionId', e.target.value)}
+                  onChange={e => {
+                    const selected = habitaciones.find(h => String(h.id) === e.target.value);
+                    handleChange('habitacionId', e.target.value);
+                    handleChange('numeroHabitacion', selected ? selected.numero : '');
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
+                >
+                  <option value="">Selecciona una habitación</option>
+                  {habitaciones.map(h => (
+                    <option key={h.id} value={h.id}>
+                      {h.numero} (ID: {h.id})
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">ID Huésped</label>
@@ -166,13 +190,14 @@ const CrearReserva = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
               </div>
+              {/* El campo de número de habitación ahora es solo de lectura */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Número de habitación</label>
                 <input
                   type="text"
                   value={reserva.numeroHabitacion}
-                  onChange={e => handleChange('numeroHabitacion', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
                 />
               </div>
             </div>
