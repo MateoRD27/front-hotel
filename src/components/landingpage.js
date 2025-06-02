@@ -97,13 +97,11 @@ export default function CalendarioReservas() {
     switch (reserva.estadoReserva) {
       case 'CONFIRMADA':
         return 'bg-green-500 text-white';
-      case 'PENDIENTE':
+      case 'EN_CURSO':
         return 'bg-yellow-500 text-white';
-      case 'ACTIVA':
-        return 'bg-blue-500 text-white';
-      case 'CANCELADA':
+      case 'FINALIZADA':
         return 'bg-red-500 text-white';
-      case 'COMPLETADA':
+      case 'CANCELADA':
         return 'bg-gray-500 text-white';
       default:
         return 'bg-purple-500 text-white';
@@ -154,7 +152,7 @@ export default function CalendarioReservas() {
             await checkInReserva(reservaSeleccionada.id);
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
-                ? { ...r, estadoReserva: 'ACTIVA' }
+                ? { ...r, estadoReserva: 'EN_CURSO' }
                 : r
             ));
             cerrarModal();
@@ -167,7 +165,7 @@ export default function CalendarioReservas() {
             await checkOutReserva(reservaSeleccionada.id);
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
-                ? { ...r, estadoReserva: 'COMPLETADA' }
+                ? { ...r, estadoReserva: 'FINALIZADA' }
                 : r
             ));
             cerrarModal();
@@ -299,19 +297,15 @@ export default function CalendarioReservas() {
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-              <span>Pendiente</span>
+              <span>Activas</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-blue-500 rounded"></div>
-              <span>Activa</span>
+              <span>Finalizadas</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-red-500 rounded"></div>
               <span>Cancelada</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-gray-500 rounded"></div>
-              <span>Completada</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 border-2 border-gray-300 rounded"></div>
@@ -380,15 +374,16 @@ export default function CalendarioReservas() {
             </div>
             <div className="text-center p-3 bg-yellow-50 rounded">
               <div className="text-2xl font-bold text-yellow-600">
-                {reservas.filter(r => r.estadoReserva === 'PENDIENTE').length}
+                {reservas.filter(r => r.estadoReserva === 'EN_CURSO').length}
               </div>
-              <div className="text-yellow-700">Pendientes</div>
+              <div className="text-yellow-700">Activas</div>
             </div>
+
             <div className="text-center p-3 bg-blue-50 rounded">
               <div className="text-2xl font-bold text-blue-600">
-                {reservas.filter(r => r.estadoReserva === 'ACTIVA').length}
+                {reservas.filter(r => r.estadoReserva === 'FINALIZADA').length}
               </div>
-              <div className="text-blue-700">Activas</div>
+              <div className="text-blue-700">Finalizadas</div>
             </div>
             <div className="text-center p-3 bg-red-50 rounded">
               <div className="text-2xl font-bold text-red-600">
@@ -438,8 +433,8 @@ export default function CalendarioReservas() {
                 <span className="font-medium text-gray-700">Estado:</span>
                 <span className={`px-2 py-1 rounded text-xs font-medium ${
                   reservaSeleccionada.estadoReserva === 'CONFIRMADA' ? 'bg-green-100 text-green-800' :
-                  reservaSeleccionada.estadoReserva === 'PENDIENTE' ? 'bg-yellow-100 text-yellow-800' :
-                  reservaSeleccionada.estadoReserva === 'ACTIVA' ? 'bg-blue-100 text-blue-800' :
+                  reservaSeleccionada.estadoReserva === 'EN_CURSO' ? 'bg-yellow-100 text-yellow-800' :
+                  reservaSeleccionada.estadoReserva === 'FINALIZADA' ? 'bg-blue-100 text-blue-800' :
                   reservaSeleccionada.estadoReserva === 'CANCELADA' ? 'bg-red-100 text-red-800' :
                   'bg-gray-100 text-gray-800'
                 }`}>
@@ -468,7 +463,7 @@ export default function CalendarioReservas() {
                   Check-in
                 </button>
               )}
-              {reservaSeleccionada.estadoReserva === 'ACTIVA' && (
+              {reservaSeleccionada.estadoReserva === 'EN_CURSO' && (
                 <button 
                   onClick={() => handleAccion('checkout')} 
                   className="px-3 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors text-sm"
@@ -476,7 +471,7 @@ export default function CalendarioReservas() {
                   Check-out
                 </button>
               )}
-              {['CONFIRMADA', 'PENDIENTE'].includes(reservaSeleccionada.estadoReserva) && (
+              {['CONFIRMADA', 'EN_CURSO'].includes(reservaSeleccionada.estadoReserva) && (
                 <button 
                   onClick={() => handleAccion('cancelar')} 
                   className="px-3 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors text-sm"
