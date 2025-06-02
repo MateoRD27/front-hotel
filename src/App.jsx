@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LandingPage from './components/landingpage';
+import CalendarioReservas from './components/landingpage';
 import ModificarReserva from './components/ModificarReserva';
 import EliminarReserva from './components/EliminarReserva';
 import CrearReserva from './components/CrearReserva';
@@ -68,20 +68,20 @@ function App() {
       <Routes>
         {/* Redirigir raíz según autenticación */}
         <Route path="/" element={
-          isAuthenticated ? <Navigate to="/landing" /> : <Navigate to="/login" />
+          isAuthenticated ? <Navigate to="/reservas" /> : <Navigate to="/login" />
         } />
 
         {/* Rutas públicas */}
-        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/landing" />} />
-        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/landing" />} />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/reservas" />} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/reservas" />} />
 
         <Route element={<ProtectedRoute isAllowed={isAuthenticated} />}>
           <Route element={<Layout />}>
             <Route path="/reportes" element={<Reportes />} />
-            <Route path="/landing" element={<LandingPage />} />
-            <Route path="/modificar/:id" element={<ModificarReservaWrapper />} />
-            <Route path="/eliminar/:id" element={<EliminarReservaWrapper />} />
-            <Route path="/crear-reserva" element={<CrearReserva />} />
+            <Route path="/reservas" element={<CalendarioReservas />} />
+            <Route path="/reservas/crear" element={<CrearReserva />} />
+            <Route path="/reservas/modificar/:id" element={<ModificarReservaWrapper />} />
+            <Route path="/reservas/eliminar/:id" element={<EliminarReservaWrapper />} />
           </Route>
         </Route>
 

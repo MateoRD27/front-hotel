@@ -1,4 +1,34 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import axios from 'axios';
+
+// Funciones de API para reservas
+const getReservas = async () => {
+  const response = await axios.get('http://localhost:8585/api/reservas');
+  return response.data;
+};
+
+const eliminarReserva = async (id) => {
+  await axios.delete(`http://localhost:8585/api/reservas/${id}`);
+};
+
+const cancelarReserva = async (id) => {
+  await axios.put(`http://localhost:8585/api/reservas/${id}/cancelar`);
+};
+
+const checkInReserva = async (id) => {
+  await axios.put(`http://localhost:8585/api/reservas/${id}/checkin`);
+};
+
+const checkOutReserva = async (id) => {
+  await axios.put(`http://localhost:8585/api/reservas/${id}/checkout`);
+};
+
+// Servicio para habitaciones
+const getHabitaciones = async () => {
+  const response = await axios.get('http://localhost:8585/api/habitaciones');
+  return response.data;
+};
 
 // Generar días del mes actual
 const generarDiasDelMes = () => {
@@ -14,6 +44,7 @@ const generarDiasDelMes = () => {
 };
 
 export default function CalendarioReservas() {
+  const navigate = useNavigate(); // Hook para navegación
   const [reservas, setReservas] = useState([]);
   const [habitaciones, setHabitaciones] = useState([]);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
@@ -29,8 +60,8 @@ export default function CalendarioReservas() {
       
       // Cargar reservas y habitaciones en paralelo
       const [reservasData, habitacionesData] = await Promise.all([
-        api.getReservas(),
-        api.getHabitaciones()
+        getReservas(),
+        getHabitaciones()
       ]);
       
       setReservas(reservasData);
@@ -95,22 +126,18 @@ export default function CalendarioReservas() {
       
       switch (tipo) {
         case 'modificar':
-          // Aquí puedes implementar la navegación o abrir un modal de edición
-          alert(`Modificar reserva ID: ${reservaSeleccionada.id}`);
+          // Navegar a la página de modificar reserva
+          navigate(`/reservas/modificar/${reservaSeleccionada.id}`);
           break;
           
         case 'eliminar':
-          if (confirm('¿Estás seguro de que quieres eliminar esta reserva?')) {
-            await api.eliminarReserva(reservaSeleccionada.id);
-            setReservas(prev => prev.filter(r => r.id !== reservaSeleccionada.id));
-            cerrarModal();
-            alert('Reserva eliminada exitosamente');
-          }
+          // Navegar a la página de eliminar reserva
+          navigate(`/reservas/eliminar/${reservaSeleccionada.id}`);
           break;
           
         case 'cancelar':
-          if (confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
-            await api.cancelarReserva(reservaSeleccionada.id);
+          if (window.confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
+            await cancelarReserva(reservaSeleccionada.id);
             // Actualizar el estado local
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
@@ -123,8 +150,8 @@ export default function CalendarioReservas() {
           break;
           
         case 'checkin':
-          if (confirm('¿Realizar check-in para esta reserva?')) {
-            await api.realizarCheckIn(reservaSeleccionada.id);
+          if (window.confirm('¿Realizar check-in para esta reserva?')) {
+            await checkInReserva(reservaSeleccionada.id);
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
                 ? { ...r, estadoReserva: 'ACTIVA' }
@@ -136,8 +163,8 @@ export default function CalendarioReservas() {
           break;
           
         case 'checkout':
-          if (confirm('¿Realizar check-out para esta reserva?')) {
-            await api.realizarCheckOut(reservaSeleccionada.id);
+          if (window.confirm('¿Realizar check-out para esta reserva?')) {
+            await checkOutReserva(reservaSeleccionada.id);
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
                 ? { ...r, estadoReserva: 'COMPLETADA' }
@@ -157,8 +184,8 @@ export default function CalendarioReservas() {
   };
 
   const handleNuevaReserva = () => {
-    // Aquí puedes implementar la navegación a crear reserva
-    alert('Crear nueva reserva');
+    // Navegar a la página de crear nueva reserva
+    navigate('/reservas/crear');
   };
 
   const cerrarModal = () => {
@@ -203,12 +230,24 @@ export default function CalendarioReservas() {
             </div>
             {/* Navigation Links */}
             <div className="flex items-center space-x-8">
-              <a href="#" className="text-gray-700 hover:text-gray-900">Inicio</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Reservaciones</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">Huésped</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">Habitaciones</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">Inventario</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">Reportes</a>
+              <button onClick={() => navigate('/')} className="text-gray-700 hover:text-gray-900">
+                Inicio
+              </button>
+              <button onClick={() => navigate('/reservas')} className="text-gray-700 hover:text-gray-900 font-medium">
+                Reservaciones
+              </button>
+              <button onClick={() => navigate('/huespedes')} className="text-gray-700 hover:text-gray-900">
+                Huésped
+              </button>
+              <button onClick={() => navigate('/habitaciones')} className="text-gray-700 hover:text-gray-900">
+                Habitaciones
+              </button>
+              <button onClick={() => navigate('/inventario')} className="text-gray-700 hover:text-gray-900">
+                Inventario
+              </button>
+              <button onClick={() => navigate('/reportes')} className="text-gray-700 hover:text-gray-900">
+                Reportes
+              </button>
               <button 
                 className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors" 
                 onClick={handleNuevaReserva}
