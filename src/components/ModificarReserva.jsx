@@ -110,9 +110,9 @@ const ModificarReserva = ({ reservaId }) => {
                 onChange={e => handleChange('estadoReserva', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               >
-                <option value="PENDIENTE">Pendiente</option>
-                <option value="CONFIRMADA">Confirmada</option>
-                <option value="CANCELADA">Cancelada</option>
+                <option value="FINALIZADA">Pendiente</option>
+                <option value="EN_CURSO">En curso</option>
+                <option value="CANCELADA ">Cancelada</option>
                 {/* Agrega más estados según tu Enum */}
               </select>
             </div>
