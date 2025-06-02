@@ -1,9 +1,9 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import CalendarioReservas from './components/landingpage';
-import ModificarReserva from './components/ModificarReserva';
-import EliminarReserva from './components/EliminarReserva';
-import CrearReserva from './components/CrearReserva';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import CalendarioReservas from './components/reserva/landingpage';
+import ModificarReserva from './components/reserva/ModificarReserva';
+import EliminarReserva from './components/reserva/EliminarReserva';
+import CrearReserva from './components/reserva/CrearReserva';
 import axios from 'axios';
 import './App.css';
 import { useAuth } from './context/AuthContext';
@@ -16,9 +16,7 @@ import Layout from './components/common/Layout';
 // Rutas perezosas
 const Login = lazy(() => import('./components/auth/Login'));
 const Register = lazy(() => import('./components/auth/Register'));
-const Reportes = lazy(() => import('./components/Reportes'));
-
-
+const Reportes = lazy(() => import('./components/reporte/Reportes'));
 const NotFound = lazy(() => import('./components/NotFound'));
 
 function App() {

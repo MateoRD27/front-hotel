@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Area, AreaChart
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,ResponsiveContainer,
+  PieChart, Pie, Cell, Area, AreaChart
 } from 'recharts';
 import { 
   Calendar, CreditCard, Users, AlertCircle, DollarSign, 
-  TrendingUp, Home, FileText, Clock, CheckCircle 
+  TrendingUp, Home, Clock, CheckCircle 
 } from 'lucide-react';
 
 const Reportes = () => {

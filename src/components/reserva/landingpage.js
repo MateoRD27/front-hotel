@@ -197,49 +197,7 @@ export default function CalendarioReservas() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Bar */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gray-800 rounded-full"></div>
-              <span className="text-gray-800 font-medium">Grupo Montaña</span>
-            </div>
-            {/* Navigation Links */}
-            <div className="flex items-center space-x-8">
-              <button onClick={() => navigate('/')} className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
-                Inicio
-              </button>
-              <button onClick={() => navigate('/reservas')} className="text-gray-700 hover:text-gray-900 font-medium transition-colors duration-200">
-                Reservaciones
-              </button>
-              <button onClick={() => navigate('/huespedes')} className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
-                Huésped
-              </button>
-              <button onClick={() => navigate('/habitaciones')} className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
-                Habitaciones
-              </button>
-              <button onClick={() => navigate('/inventario')} className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
-                Inventario
-              </button>
-              <button onClick={() => navigate('/reportes')} className="text-gray-700 hover:text-gray-900 transition-colors duration-200">
-                Reportes
-              </button>
-              <button 
-                className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors duration-200" 
-                onClick={handleNuevaReserva}
-              >
-                Nueva Reserva
-              </button>
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-gray-600 font-bold">C</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+  
       {/* Main Content */}
       <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">

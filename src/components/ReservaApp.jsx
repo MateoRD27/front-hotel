@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import CrearReserva from './CrearReserva';
-import ModificarReserva from './ModificarReserva';
-import EliminarReserva from './EliminarReserva';
+import CrearReserva from './reserva/CrearReserva';
+import ModificarReserva from './reserva/ModificarReserva';
+import EliminarReserva from './reserva/EliminarReserva';
 
 const ReservaApp = () => {
   const [currentView, setCurrentView] = useState('crear');
