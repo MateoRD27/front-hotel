@@ -4,6 +4,7 @@ import { eliminarReserva, getReservaById } from './apiReservas';
 const EliminarReserva = ({ reservaId }) => {
   const [reserva, setReserva] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchReserva = async () => {
@@ -20,12 +21,14 @@ const EliminarReserva = ({ reservaId }) => {
   }, [reservaId]);
 
   const handleEliminar = async () => {
+    setError('');
     try {
       await eliminarReserva(reservaId);
       alert('Reserva eliminada exitosamente');
       // Redirigir o actualizar la lista si es necesario
     } catch (error) {
-      alert('Error al eliminar la reserva');
+      const msg = error.response?.data?.message || 'Error al eliminar la reserva';
+      setError(msg);
     }
   };
 
@@ -54,6 +57,11 @@ const EliminarReserva = ({ reservaId }) => {
           Eliminar
         </button>
       </div>
+      {error && (
+        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
     </div>
   );
 };

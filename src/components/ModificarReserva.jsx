@@ -4,6 +4,7 @@ import { modificarReserva, getReservaById } from './apiReservas';
 const ModificarReserva = ({ reservaId }) => {
   const [reserva, setReserva] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchReserva = async () => {
@@ -32,6 +33,7 @@ const ModificarReserva = ({ reservaId }) => {
   };
 
   const handleGuardar = async () => {
+    setError('');
     try {
       const reservaData = {
         ...reserva,
@@ -43,7 +45,8 @@ const ModificarReserva = ({ reservaId }) => {
       await modificarReserva(reservaId, reservaData);
       alert('Reserva modificada exitosamente');
     } catch (error) {
-      alert('Error al modificar la reserva');
+      const msg = error.response?.data?.message || 'Error al modificar la reserva';
+      setError(msg);
     }
   };
 
@@ -159,6 +162,11 @@ const ModificarReserva = ({ reservaId }) => {
             Guardar Cambios
           </button>
         </div>
+        {error && (
+          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );
