@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { crearReserva } from './apiReservas';
+import { crearReserva } from '../../services/apiReservas';
 import axios from 'axios';
 
 const CrearReserva = () => {

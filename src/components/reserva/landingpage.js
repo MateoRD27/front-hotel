@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
-import * as apiReservas from './apiReservas';
+import * as apiReservas from '../../services/apiReservas';
 
 
 // Servicio para habitaciones

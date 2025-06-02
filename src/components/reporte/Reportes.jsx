@@ -254,8 +254,8 @@ const Reportes = () => {
             color="#8B5CF6"
           />
           <StatCard
-            title="Huéspedes Activos"
-            value={estadisticasGenerales?.huespedesActivos}
+            title="Huéspedes Registrados"
+            value={estadisticasGenerales?.totalHuespedes}
             icon={Users}
             color="#F59E0B"
           />
@@ -302,7 +302,7 @@ const Reportes = () => {
                   cy="50%"
                   outerRadius={80}
                   dataKey="value"
-                  label={({name, value}) => `${name}: ${value}`}
+                  label={({ name, value }) => `${name}: ${value}`}
                 >
                   {habitacionesData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />

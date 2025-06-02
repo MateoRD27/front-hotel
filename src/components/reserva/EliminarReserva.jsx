@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { eliminarReserva, getReservaById } from './apiReservas';
+import { eliminarReserva, getReservaById } from '../../services/apiReservas';
 
 const EliminarReserva = ({ reservaId }) => {
   const [reserva, setReserva] = useState(null);

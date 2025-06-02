@@ -10,6 +10,10 @@ import { useAuth } from './context/AuthContext';
 import LoadingScreen from './components/common/LoadingScreen';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Layout from './components/common/Layout';
+import ListarHuespedes from './components/huesped/ListarHuespedes';
+import CrearHuesped from './components/huesped/CrearHuesped';
+import ModificarHuesped from './components/huesped/ModificarHuesped';
+import EliminarHuesped from './components/huesped/EliminarHuesped';
 
 
 
@@ -78,8 +82,12 @@ function App() {
             <Route path="/reportes" element={<Reportes />} />
             <Route path="/reservas" element={<CalendarioReservas />} />
             <Route path="/reservas/crear" element={<CrearReserva />} />
-            <Route path="/reservas/modificar/:id" element={<ModificarReservaWrapper />} />
-            <Route path="/reservas/eliminar/:id" element={<EliminarReservaWrapper />} />
+            <Route path="/reservas/modificar/:id" element={<ModificarReserva />} />
+            <Route path="/reservas/eliminar/:id" element={<EliminarReserva />} />
+            <Route path="/huespedes" element={<ListarHuespedes/>} />
+            <Route path="/huespedes/crear" element={<CrearHuesped />} />
+            <Route path="/huespedes/modificar/:id" element={<ModificarHuesped/>} />
+            <Route path="/huespedes/eliminar/:id" element={<EliminarHuesped/>} />
           </Route>
         </Route>
 

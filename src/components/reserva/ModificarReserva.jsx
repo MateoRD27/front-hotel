@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { modificarReserva, getReservaById } from './apiReservas';
+import { modificarReserva, getReservaById } from '../../services/apiReservas';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
