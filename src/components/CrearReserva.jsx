@@ -13,6 +13,7 @@ const CrearReserva = () => {
     usuarioId: '',
     numeroHabitacion: '', // AÑADIDO
   });
+  const [error, setError] = useState('');
 
   const handleChange = (field, value) => {
     setReserva(prev => ({
@@ -22,9 +23,10 @@ const CrearReserva = () => {
   };
 
   const handleGuardar = async () => {
+    setError('');
     // Validación básica de campos requeridos
     if (!reserva.habitacionId || !reserva.huespedId || !reserva.usuarioId || !reserva.numeroHabitacion) {
-      alert('Por favor completa todos los campos requeridos.');
+      setError('Por favor completa todos los campos requeridos.');
       return;
     }
 
@@ -46,8 +48,8 @@ const CrearReserva = () => {
       await crearReserva(reservaData);
       alert('Reserva creada exitosamente');
     } catch (error) {
-      console.error('Error al crear reserva:', error);
-      alert('Error al crear la reserva');
+      const msg = error.response?.data?.message || 'Error al crear la reserva';
+      setError(msg);
     }
   };
 
@@ -191,6 +193,11 @@ const CrearReserva = () => {
               Guardar
             </button>
           </div>
+          {error && (
+            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
