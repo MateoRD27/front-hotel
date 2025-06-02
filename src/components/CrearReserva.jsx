@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { crearReserva } from './apiReservas';
 import axios from 'axios';
 
@@ -16,6 +17,7 @@ const CrearReserva = () => {
   });
   const [error, setError] = useState('');
   const [habitaciones, setHabitaciones] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHabitaciones = async () => {
@@ -61,6 +63,7 @@ const CrearReserva = () => {
 
       await crearReserva(reservaData);
       alert('Reserva creada exitosamente');
+      navigate('/reservas'); // Redirige a la lista de reservas
     } catch (error) {
       const msg = error.response?.data?.message || 'Error al crear la reserva';
       setError(msg);

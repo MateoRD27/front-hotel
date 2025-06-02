@@ -1,28 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
+import * as apiReservas from './apiReservas';
 
-// Funciones de API para reservas
-const getReservas = async () => {
-  const response = await axios.get('http://localhost:8585/api/reservas');
-  return response.data;
-};
-
-const eliminarReserva = async (id) => {
-  await axios.delete(`http://localhost:8585/api/reservas/${id}`);
-};
-
-const cancelarReserva = async (id) => {
-  await axios.put(`http://localhost:8585/api/reservas/${id}/cancelar`);
-};
-
-const checkInReserva = async (id) => {
-  await axios.put(`http://localhost:8585/api/reservas/${id}/checkin`);
-};
-
-const checkOutReserva = async (id) => {
-  await axios.put(`http://localhost:8585/api/reservas/${id}/checkout`);
-};
 
 // Servicio para habitaciones
 const getHabitaciones = async () => {
@@ -60,7 +40,7 @@ export default function CalendarioReservas() {
       
       // Cargar reservas y habitaciones en paralelo
       const [reservasData, habitacionesData] = await Promise.all([
-        getReservas(),
+        apiReservas.getReservas(),
         getHabitaciones()
       ]);
       
@@ -135,7 +115,7 @@ export default function CalendarioReservas() {
           
         case 'cancelar':
           if (window.confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
-            await cancelarReserva(reservaSeleccionada.id);
+            await apiReservas.cancelarReserva(reservaSeleccionada.id);
             // Actualizar el estado local
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
@@ -149,7 +129,7 @@ export default function CalendarioReservas() {
           
         case 'checkin':
           if (window.confirm('¿Realizar check-in para esta reserva?')) {
-            await checkInReserva(reservaSeleccionada.id);
+            await apiReservas.checkInReserva(reservaSeleccionada.id);
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
                 ? { ...r, estadoReserva: 'EN_CURSO' }
@@ -162,7 +142,7 @@ export default function CalendarioReservas() {
           
         case 'checkout':
           if (window.confirm('¿Realizar check-out para esta reserva?')) {
-            await checkOutReserva(reservaSeleccionada.id);
+            await apiReservas.checkOutReserva(reservaSeleccionada.id);
             setReservas(prev => prev.map(r => 
               r.id === reservaSeleccionada.id 
                 ? { ...r, estadoReserva: 'FINALIZADA' }

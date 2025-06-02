@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { modificarReserva, getReservaById } from './apiReservas';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ModificarReserva = ({ reservaId }) => {
@@ -7,6 +8,7 @@ const ModificarReserva = ({ reservaId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [habitaciones, setHabitaciones] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchReserva = async () => {
@@ -70,6 +72,7 @@ const ModificarReserva = ({ reservaId }) => {
       };
       await modificarReserva(reservaId, reservaData);
       alert('Reserva modificada exitosamente');
+       navigate('/reservas'); // Redirige a la lista de reservas
     } catch (error) {
       const msg = error.response?.data?.message || 'Error al modificar la reserva';
       setError(msg);
@@ -139,10 +142,9 @@ const ModificarReserva = ({ reservaId }) => {
                 onChange={e => handleChange('estadoReserva', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               >
-                <option value="FINALIZADA">Pendiente</option>
                 <option value="EN_CURSO">En curso</option>
-                <option value="CANCELADA ">Cancelada</option>
-                {/* Agrega más estados según tu Enum */}
+                <option value="FINALIZADA">Finalizada</option>
+                <option value="CANCELADA">Cancelada</option>
               </select>
             </div>
             <div>
