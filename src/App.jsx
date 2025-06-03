@@ -1,8 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import CalendarioReservas from './components/reserva/landingpage';
-import ModificarReserva from './components/reserva/ModificarReserva';
-import EliminarReserva from './components/reserva/EliminarReserva';
 import CrearReserva from './components/reserva/CrearReserva';
 import axios from 'axios';
 import './App.css';
@@ -12,22 +10,20 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import Layout from './components/common/Layout';
 import ListarHuespedes from './components/huesped/ListarHuespedes';
 import CrearHuesped from './components/huesped/CrearHuesped';
-import ModificarHuesped from './components/huesped/ModificarHuesped';
-import EliminarHuesped from './components/huesped/EliminarHuesped';
-
-
 
 // Rutas perezosas
 const Login = lazy(() => import('./components/auth/Login'));
 const Register = lazy(() => import('./components/auth/Register'));
 const Reportes = lazy(() => import('./components/reporte/Reportes'));
 const NotFound = lazy(() => import('./components/NotFound'));
+const ModificarReserva = lazy(() => import('./components/reserva/ModificarReserva'));
+const EliminarReserva = lazy(() => import('./components/reserva/EliminarReserva'));
 
 function App() {
   const [message, setMessage] = useState('Cargando...');
   const [backendPort, setBackendPort] = useState(8585);
   const [status, setStatus] = useState('loading');
-  const { isAuthenticated, user, checkAuth } = useAuth();
+  const { isAuthenticated, checkAuth } = useAuth();
 
   useEffect(() => {
     const getBackendPort = async () => {
@@ -77,36 +73,34 @@ function App() {
         <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/reservas" />} />
         <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/reservas" />} />
 
+        {/* Rutas protegidas */}
         <Route element={<ProtectedRoute isAllowed={isAuthenticated} />}>
           <Route element={<Layout />}>
             <Route path="/reportes" element={<Reportes />} />
             <Route path="/reservas" element={<CalendarioReservas />} />
             <Route path="/reservas/crear" element={<CrearReserva />} />
-            <Route path="/reservas/modificar/:id" element={<ModificarReserva />} />
-            <Route path="/reservas/eliminar/:id" element={<EliminarReserva />} />
-            <Route path="/huespedes" element={<ListarHuespedes/>} />
-            <Route path="/huespedes/crear" element={<CrearHuesped />} />
             <Route path="/reservas/modificar/:id" element={<ModificarReservaWrapper />} />
             <Route path="/reservas/eliminar/:id" element={<EliminarReservaWrapper />} />
+            <Route path="/huespedes" element={<ListarHuespedes />} />
+            <Route path="/huespedes/crear" element={<CrearHuesped />} />
           </Route>
         </Route>
 
         {/* Página no encontrada */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-
     </Suspense>
   );
 }
 
-
+// Wrappers para pasar el parámetro `id` como prop
 function ModificarReservaWrapper() {
-  const { id } = require('react-router-dom').useParams();
+  const { id } = useParams();
   return <ModificarReserva reservaId={id} />;
 }
- 
+
 function EliminarReservaWrapper() {
-  const { id } = require('react-router-dom').useParams();
+  const { id } = useParams();
   return <EliminarReserva reservaId={id} />;
 }
 
