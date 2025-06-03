@@ -86,8 +86,8 @@ function App() {
             <Route path="/reservas/eliminar/:id" element={<EliminarReserva />} />
             <Route path="/huespedes" element={<ListarHuespedes/>} />
             <Route path="/huespedes/crear" element={<CrearHuesped />} />
-            <Route path="/huespedes/modificar/:id" element={<ModificarHuesped/>} />
-            <Route path="/huespedes/eliminar/:id" element={<EliminarHuesped/>} />
+            <Route path="/reservas/modificar/:id" element={<ModificarReservaWrapper />} />
+            <Route path="/reservas/eliminar/:id" element={<EliminarReservaWrapper />} />
           </Route>
         </Route>
 
